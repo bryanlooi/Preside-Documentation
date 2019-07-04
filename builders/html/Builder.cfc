@@ -95,17 +95,24 @@ component {
 					icon = "file-o";
 			}
 
-			var subHeaders = reMatchNoCase( "(##{2,6}[a-zA-Z0-9)( ]+)", page.getBody() );
+			var subHeaders = reMatchNoCase( "(##{2,6}[a-zA-Z0-9)(.:\"" ]+)", page.getBody() );
 
 			for( subHeader in subHeaders ) {
+				var text = HtmlEditFormat( trim( reReplace( subHeader, '##', '', 'all' ) ) );
 				if( len(subHeader) > 3 ) {
-					searchIndex.append( {
-						  "value"   = page.getPath() & ".html"
-						, "display" = page.getTitle()
-						, "text"    = HtmlEditFormat( trim( reReplace( subHeader, '##', '', 'all' ) ) )
-						, "type"    = page.getPageType()
-						, "icon"    = icon
-					} );
+					if (
+							!find( 'Overview'    , subHeader )
+						and !find( 'Introduction', subHeader )
+						and !find( 'Example'     , subHeader )
+					) {
+						searchIndex.append( {
+							  "value"   = page.getPath() & ".html"
+							, "display" = page.getTitle()
+							, "text"    = text
+							, "type"    = page.getPageType()
+							, "icon"    = icon
+						} );
+					}
 				}
 			}
 
